@@ -49,84 +49,94 @@ The most natural problem associated with $k$-anonymity is the problem of, given 
 In this work, we consider the more pragmatic problem of deciding if some given database conforms to $k$-anonymity and, if it does not, what the violating QIDs are.
 
 \section{Preliminaries}
-I shall first give the formal definition of the concepts I'll be working on.
+
+Let $\bigtimes$ denote the Cartesian product. Let $\Proj{c} \cD$ denote the projection of $\cD$ onto the columns $c$. Let $\binom{n}{k}$ denote the number of ways to choose $k$ elements from a set of $n$ elements.
 
 \begin{definition}
 A database $\cD$ is a finite set of $m$-tuples associated with an $m$-tuple of column names $\cC$ and an $m$-tuple of finite sets of column domains $\cF$, such that $\cD \subseteq \bigtimes_{F \in \cF} F$ and $|\cD| \leq |F|$ for all $F \in \cF$.
 \end{definition}
 
 \begin{definition}[$k$-anonymity]
-A database $\cD$ is $k$-anonymous iff, for all $d \in \cD$ and for all $c \subseteq \cC$, there exist a subset $S \subseteq \Proj{c} \cD$ of size at least $k$ such that $s = \Proj{c} d$ for all $s \in S$.
+A database $\cD$ is $k$-anonymous iff, for all $d \in \cD$ and for all $c \subseteq \cC$, there exists a subset $S \subseteq \Proj{c} \cD$ of size at least $k$ such that $s = \Proj{c} d$ for all $s \in S$.
 \end{definition}
 
 \begin{definition}
-A quasi-identifier (QID) is a finite set of columns $Q \subseteq \cC$ such that it is a witness to violation of $k$-anonymity; that is, there is some $d \in \cD$ such that there is no $S \subseteq \Proj{Q} \cD$ with $s = \Proj{Q} d$ for all $s \in S$ of size at least $k$.
+A quasi-identifier (QID) is a finite set of columns $Q \subseteq \cC$ such that it is a witness to the violation of $k$-anonymity; that is, there is some $d \in \cD$ such that there is no $S \subseteq \Proj{Q} \cD$ with $s = \Proj{Q} d$ for all $s \in S$ of size at least $k$.
 \end{definition}
 
-Now, I am ready to define the problems at hand.
-
 \section{$k$-anonymity-test}
-Consider the problem of \emph{$k$-anonymity-test}, which decides if some given database is $k$-anonymous.
+
+We consider at the decision problem $k$-anonymity-test.
 
 \begin{problem}[$k$-anonymity-test]
-Given an instance of a database $\cD$, is $\Proj{c} \cD$ $k$-anonymous for all $c \subseteq \cC$.
+Given an instance of a database $\cD$, is $\Proj{c} \cD$ $k$-anonymous for all $c \subseteq \cC$?
 \end{problem}
 
-For the following, I shally employ Sweeney's Lemma from \cite{Sweeney:2002}, which effectively states that removing columns can only make it k-anonymous and that, vice versa, adding columns can only make it not k-anonymous.
-
-\begin{lemma}
-Given an instance of a database $\cD$, if $\Proj{A} \cD$ is k-anonymous, then $\Proj{B} \cD$ is k-anonymous for all $B \subseteq A$.
+\begin{lemma}[Sweeney's Lemma\cite{Sweeney:2002}]
+Given an instance of a database $\cD$, if $\Proj{A} \cD$ is $k$-anonymous, then $\Proj{B} \cD$ is $k$-anonymous for all $B \subseteq A$; that is, removing columns can only make a database $k$-anonymous and that, vice versa, adding columns can only make a database not $k$-anonymous.
 \label{lemma:sweeney}
 \end{lemma}
 
 \begin{proposition}
-$k$-anonymity-test is in P.
+$k$-anonymity-test is in \text{P}.
 \end{proposition}
 
 \begin{proof}
 Given $\cD$, by Lemma~\ref{lemma:sweeney}, it suffices to solve $k$-anonymity-test by checking whether $\Proj{\cC} \cD$ is $k$-anonymous, which is polynomial in the size of $\cD$.
 \end{proof}
 
-Therefore, to check if $k$-anonymity holds for all subsets of columns for a given database, we only need to check if $k$-anonymity holds for the case of the whole sets of columns.
+\begin{corollary}
+To check if $k$-anonymity holds for all subsets of columns for a given database, we only need to check if $k$-anonymity holds for the case of the whole set of columns.
+\end{corollary}
 
 \section{minimum-QID}
-If some database is found to not be $k$-anonymous, the natural question to ask is: what are the QIDs that violates $k$-anonymity? By Lemma~\ref{lemma:sweeney}, since all supersets of violating QIDs are themselves violating QIDs, we shall consider the problem of finding the minimum QIDs.
+If some database is found to be not $k$-anonymous, the natural question to ask is: what are the QIDs that violate $k$-anonymity? By Lemma~\ref{lemma:sweeney}, since all supersets of violating QIDs are themselves violating QIDs, we shall consider the problem of finding the minimum QIDs.
 
 \begin{definition}
 For a QID $Q$ that violates $k$-anonymity, it is minimum if $Q'$ does not violate $k$-anonymity for all $|Q'| < |Q|$.
 \end{definition}
 
-Note that minimum QID is unique. Now we can look at the function problem presented by this definitions.
+Now, we consider the function problem minimum-QID.
 
 \begin{problem}[minimum-QID]
 Given an instance of a database $\cD$, find the minimum QID.
 \end{problem}
 
 \begin{proposition}
-minimum-QID is NP-hard.
+minimum-QID is \text{NP-hard}.
 \end{proposition}
 
 \subsection{Proof}
-As function problems can be easily transformed to corresponding decision problems. To prove the NP-hardness, I consider the decision version of the problem, $k$-QID: if there is some QID of size $k$, and reduce it to the minimum cover problem, a NP-complete problem, which is [SP5] in Garey and Johnson \cite{Garey:1990}. It asks: given a collection $C$ of subsets of a finite set $S$ and a positive integer $K \leq |C|$, does $C$ contain a cover for $S$ of size $K$ or less, i.e., a subset $C' \subseteq C$ with $|C'| \leq K$ such that every element of $S$ belongs to at least one member of $C'$?
+As function problems can be easily transformed to corresponding decision problems, to prove the NP-hardness, we consider the decision version of the problem, $k$-QID.
 
-The construction goes as follows. Given an instance of minimum cover, construct a database $\cD$ with $\cC$ as columns and $S \cup \set{\bot}$ as rows. For the content of the database, let
+\begin{problem}[$k$-QID]
+Given an instance of a database $\cD$ and a positive integer $k$, is there some QID of size $k$?
+\end{problem}
+
+We shall reduce it to the minimum cover problem, an NP-complete problem, which is [SP5] in Garey and Johnson\cite{Garey:1990}.
+
+\begin{problem}[Minimum Cover]
+Given a collection $C$ of subsets of a finite set $S$ and a positive integer $K \leq |C|$, does $C$ contain a cover for $S$ of size $K$ or less? That is, is there a subset $C' \subseteq C$ with $|C'| \leq K$ such that every element of $S$ belongs to at least one member of $C'$?
+\end{problem}
+
+The construction goes as follows. Given an instance of minimum cover, construct a database $\cD$ with a fixed ordering of columns indexed by $C$ and rows indexed by $S \cup \set{\bot}$. For the content of the database, let
 $$
 \cD[i][j] =
 \begin{cases}
-    i,    &\text{if } S[i] \in \cC[j]\\
+    i,    &\text{if } S[i] \in C[j]\\
     \bot, &\text{otherwise}
 \end{cases}
 $$
-where $\cD[i][j]$ represents the $j$th element in the $i$th tuple in $\cD$ and $\bot$ is a fresh symbol not in $S$.
+where $\cD[i][j]$ represents the $j$th element in the $i$th tuple in $\cD$, $S[i]$ and $C[j]$ represent the $i$ and $j$th element in the $S$ and $C$ indices given the ordering, and $\bot$ is a fresh symbol not in $S$.
 
-Now for the correctness that the given instance satisfies minimum cover iff the constructed instance satisfies $k$-QID.
+The correctness that the given instance satisfies minimum cover iff the constructed instance satisfies $k$-QID is proved as follows.
 
-Suppose there is such subset $C'$ of $C$ such that every element in $S$ is in at least one set of $C'$. Project the columns corresponding to $C'$ in the database. Since every element is in at least one set of $C'$, every row except the $\bot$-row has at least one element unique to that row, so there are no duplicate rows in $\Proj{C'} \cD$; thus, the number of rows in the projected database $\Proj{C'} \cD$ is equal to the original database $\cD$.
+Suppose there is a subset $C'$ of $C$ such that every element in $S$ is in at least one set of $C'$. Project the columns corresponding to $C'$ in the database. Since every element is in at least one set of $C'$, every row except the $\bot$-row has an element representing this row's indexing element is in some column's indexing subset and is unique to that row, so there are no duplicate rows in $\Proj{C'} \cD$; thus, the number of rows in the projected database $\Proj{C'} \cD$ is equal to the original database $\cD$, and the QID is $C'$.
 
-Suppose there is some subset of columns $N$ such that the number of rows in the projected database $\Proj{N} \cD$ is equal to the original database $\cD$. Per the assumption, it immediately follows that there are no duplicate rows in $\Proj{N} \cD$; furthermore, per the construction rule of the database, every row must have at least one non-$\bot$ element in some column in $N$. Thus, choose those subsets $C'$ corresponding to $N$ from $C$, and every element of $S$ must be in at least one set in $C'$.
+Suppose there is a subset of columns $C'$ forming QID such that the number of rows in the projected database $\Proj{N} \cD$ is equal to the original database $\cD$. Per the assumption, it immediately follows that there are no duplicate rows in $\Proj{C'} \cD$; furthermore, per the construction rule of the database, every row must have at least one non-$\bot$ element in some column in $N$. Thus, choose those columns corresponding to $C'$ from $C$ and every element of $S$ must be in at least one set in $C'$, and $N$ is a cover for $S$.
 
 \subsection{Example}
-Let $k=2$, $S = \{a,b,c,d,e\}$, and $C = \{c_1,c_2,c_3,c_4\}$ with $c_1 = \{a,b,c\}, c_2 = \{b,d\}, c_3 = \{c,d\}, c_4 = \{d,e\}\}$. There is a solution $C' = \{c_1,c_4\} = \{\{1,2,3\},~\{4,5\}\}$.
+Let $k=2$, $S = \{a,b,c,d,e\}$, and $C = \{c_1,c_2,c_3,c_4\}$ with $c_1 = \{a,b,c\}, c_2 = \{b,d\}, c_3 = \{c,d\}, c_4 = \{d,e\}$. There is a solution $C' = \{c_1,c_4\} = \{\{1,2,3\},~\{4,5\}\}$.
 
 The constructed database for this instance is:
 
@@ -139,8 +149,8 @@ The constructed database for this instance is:
                  & (\bot, && \bot, && \bot, && 5   ),  && e\\
                  & (\bot, && \bot, && \bot, && \bot)\} && \bot\\
 \end{align*}
-\vspace*{10pt}
-If we project the solution, i.e., $\Pi_{c_1,c_4} \mathcal{D}$, we get:
+
+If we project the solution, i.e., $\Proj{c_1,c_4} \mathcal{D}$, we get:
 
 \begin{align*}
                  &  c_1   && c_4     &&\\
@@ -154,7 +164,7 @@ If we project the solution, i.e., $\Pi_{c_1,c_4} \mathcal{D}$, we get:
 
 where no two rows are identical, meaning every element is in at least one of $c_1,c_4$.
 
-If we project something incorrect, e.g., $\Pi_{c_1,c_2,c_3} \mathcal{D}$, we get:
+If we project something incorrect, e.g., $\Proj{c_1,c_2,c_3} \mathcal{D}$, we get:
 
 \begin{align*}
                  &  c_1   && c_2   && c_3     &&\\
@@ -169,30 +179,32 @@ If we project something incorrect, e.g., $\Pi_{c_1,c_2,c_3} \mathcal{D}$, we get
 where the $e$-row and $\bot$-row are identical, meaning $e$ is not in any of $c_1,c_2,c_3$.
 
 \section{minimal-QID}
-As minimum-QID is NP-hard, I turned to try to come up with a randomized algorithm and, in turn, found a solution to a somewhat slightly different problem, where the result is only locally optimal, the minimal-QID problem.
+As minimum-QID is NP-hard, we turn to a somewhat slightly different problem.
 
 \begin{definition}
 For a QID $Q$ that violates $k$-anonymity, it is minimal if $Q'$ does not violate $k$-anonymity for all $Q' \subseteq Q$.
 \end{definition}
 
-Note that a minimal QID is not unique as it may be only locally maximal.
+Note that a minimal QID is not unique as it may be only locally minimal.
 
 \begin{problem}[minimal-QID]
-Given an instance of a database $\cD$, find the minimal QID.
+Given an instance of a database $\cD$, find a minimal QID.
 \end{problem}
 
 \begin{proposition}
 minimal-QID is in P.
 \end{proposition}
 
-I shall prove it by simply giving the polynomial time algorithm for finding a minimal QID. This algorithm essentially avoid the factorial blow-up of combinations by choosing only the immediately successing level and descending in a greedy manner whenever possible.
+We shall prove it by simply giving the polynomial time algorithm for finding a minimal QID. This algorithm essentially avoid the factorial blow-up of combinations by choosing only the immediately successing level and descending in a greedy manner whenever possible.
+
+$combinations(S,k)$ denotes the set of all subsets of $S$ of size $k$.
 
 \subsection{Algorithm}
 \begin{algorithm}[H]
     \DontPrintSemicolon
     \KwData{A database $\cD$.}
     \KwResult{A set of columns that completely identifies the database.}
-    $goal = |\Pi_{\mathcal{C}} \mathcal{D}|$\;
+    $goal = |\Proj{\mathcal{C}} \mathcal{D}|$\;
     $fields = \mathcal{C}$\;
     $found = True$\;
     \While{$found$}
@@ -200,7 +212,7 @@ I shall prove it by simply giving the polynomial time algorithm for finding a mi
         $found = False$\;
         \For{$next \in combinations(fields,|fields|-1)$}
         {
-            \If{$|\Pi_{next} \mathcal{D}| = goal$}
+            \If{$|\Proj{next} \mathcal{D}| = goal$}
             {
                 $found = True$\;
                 $fields = next$\;
@@ -229,7 +241,7 @@ Consider this database.
     \end{tabular}
 \end{center}
 
-The minimum QID is (d,e) and the algorithm finds the minimal QID (a,b,c) following these steps.
+The minimum QID is (d,e) and the algorithm finds the minimal QID (a,b,c) following these steps. The rightmost column in the table indicates whether current the set of columns forms a QID.
 \begin{center}
     \begin{tabular}{ | M{3em} | M{3em} | M{3em} | M{3em} | M{3em} | M{3em} | }
     \hline
