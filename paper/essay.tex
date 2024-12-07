@@ -22,14 +22,19 @@
 
 \title{Finding Quasi-identifiers Against $k$-anonymity}
 
-\author{Chih-chen Yuan}
-\institute{National Taiwan Normal University, Taiwan}
+\author{Chih-Cheng Rex Yuan \and
+        Bow-Yaw Wang}
+
+\institute{
+    Institute of Information Science, Academia Sinica, Taipei, Taiwan \\
+    \email{hello@rexyuan.com, bywang@iis.sinica.edu.tw}
+}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-
+Protecting individual privacy in data releases is crucial. The concept of $k$-anonymity ensures each record is indistinguishable from at least $k-1$ others based on certain attributes. We address testing whether a database conforms to $k$-anonymity and identifying violating quasi-identifiers (QIDs). We prove that testing for $k$-anonymity is polynomial-time solvable, but finding the minimum QID is NP-hard. To address this, we introduce an efficient algorithm to find a minimal QID. We demonstrate the effectiveness of our algorithm with an example.
 \end{abstract}
 
 \section{Introduction}
@@ -131,9 +136,9 @@ where $\cD[i][j]$ represents the $j$th element in the $i$th tuple in $\cD$, $S[i
 
 The correctness that the given instance satisfies minimum cover iff the constructed instance satisfies $k$-QID is proved as follows.
 
-Suppose there is a subset $C'$ of $C$ such that every element in $S$ is in at least one set of $C'$. Project the columns corresponding to $C'$ in the database. Since every element is in at least one set of $C'$, every row except the $\bot$-row has an element representing this row's indexing element is in some column's indexing subset and is unique to that row, so there are no duplicate rows in $\Proj{C'} \cD$; thus, the number of rows in the projected database $\Proj{C'} \cD$ is equal to the original database $\cD$, and the QID is $C'$.
+Suppose there is a subset $C'$ of $C$ such that every element in $S$ is in at least one set of $C'$. Project the columns corresponding to $C'$ in the database. Since every element is in at least one set of $C'$, every row except the $\bot$-row has an element representing this row's indexing element is in some column's indexing subset and is unique to that row, so there are no duplicate rows in $\Proj{C'} \cD$; thus, the number of rows in the projected database $\Proj{C'} \cD$ is equal to the original database $\cD$. The QID is $C'$.
 
-Suppose there is a subset of columns $C'$ forming QID such that the number of rows in the projected database $\Proj{N} \cD$ is equal to the original database $\cD$. Per the assumption, it immediately follows that there are no duplicate rows in $\Proj{C'} \cD$; furthermore, per the construction rule of the database, every row must have at least one non-$\bot$ element in some column in $N$. Thus, choose those columns corresponding to $C'$ from $C$ and every element of $S$ must be in at least one set in $C'$, and $N$ is a cover for $S$.
+Suppose there is a subset of columns $C'$ forming QID such that the number of rows in the projected database $\Proj{N} \cD$ is equal to the original database $\cD$. Per the assumption, it immediately follows that there are no duplicate rows in $\Proj{C'} \cD$; furthermore, per the construction rule of the database, every row must have at least one non-$\bot$ element in some column in $N$. Thus, choose those columns corresponding to $C'$ from $C$, and every element of $S$ must be in at least one set in $C'$. $N$ is a cover for $S$.
 
 \subsection{Example}
 Let $k=2$, $S = \{a,b,c,d,e\}$, and $C = \{c_1,c_2,c_3,c_4\}$ with $c_1 = \{a,b,c\}, c_2 = \{b,d\}, c_3 = \{c,d\}, c_4 = \{d,e\}$. There is a solution $C' = \{c_1,c_4\} = \{\{1,2,3\},~\{4,5\}\}$.
@@ -185,7 +190,7 @@ As minimum-QID is NP-hard, we turn to a somewhat slightly different problem.
 For a QID $Q$ that violates $k$-anonymity, it is minimal if $Q'$ does not violate $k$-anonymity for all $Q' \subseteq Q$.
 \end{definition}
 
-Note that a minimal QID is not unique as it may be only locally minimal.
+Note that a minimal QID is not unique, as it may be only locally minimal.
 
 \begin{problem}[minimal-QID]
 Given an instance of a database $\cD$, find a minimal QID.
@@ -195,7 +200,7 @@ Given an instance of a database $\cD$, find a minimal QID.
 minimal-QID is in P.
 \end{proposition}
 
-We shall prove it by simply giving the polynomial time algorithm for finding a minimal QID. This algorithm essentially avoid the factorial blow-up of combinations by choosing only the immediately successing level and descending in a greedy manner whenever possible.
+We shall prove it by simply giving the polynomial time algorithm for finding a minimal QID. This algorithm essentially avoids the factorial blow-up of combinations by choosing only the immediately succeeding level and descending in a greedy manner whenever possible.
 
 $combinations(S,k)$ denotes the set of all subsets of $S$ of size $k$.
 
@@ -256,7 +261,7 @@ The minimum QID is (d,e) and the algorithm finds the minimal QID (a,b,c) followi
 \end{center}
 
 \section{Conclusion}
-I should be able to fashion the algorithm for finding minimal QID into some sort of randomized algorithm with proper bounds for finding minimum QID. This is going to be the next step for my research.
+In this work, we considered the problems of $k$-anonymity-test, minimum-QID, and minimal-QID. We showed that $k$-anonymity-test is in P, minimum-QID is NP-hard, and minimal-QID is in P. The results suggest that, while finding the minimum QID is hard, finding a minimal QID is easy.
 
 \bibliography{essay}
 \bibliographystyle{splncs04}
