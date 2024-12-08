@@ -1,1 +1,4 @@
-# Jessica-the-Liberated
+## Setup
+```
+conda env create -f environment.yml
+```
